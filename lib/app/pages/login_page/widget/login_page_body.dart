@@ -93,8 +93,8 @@ class LoginPageBody extends HookWidget {
                 onPressed: () {
                   if (formKey.currentState!.validate()) {
                     final phone = '+92${phoneController.text}';
-                    context.read<AuthCubit>().saveCredentials(phone);
-                    context.router.replace(const DashboardRoute());
+                    // context.read<AuthCubit>().saveCredentials(phone);
+                    context.router.push(OtpVerificationRoute(phoneNumber: phone));
                   }
                 },
               ),

@@ -114,7 +114,6 @@ class AppElevatedButton extends StatelessWidget {
                               suffixIcon != null
                                   ? SvgPicture.asset(
                                       suffixIcon!,
-                                      color: AppColors.white,
                                     )
                                   : const SizedBox.shrink(),
                             ],

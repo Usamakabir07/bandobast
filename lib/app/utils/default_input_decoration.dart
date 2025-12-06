@@ -14,12 +14,13 @@ InputDecoration defaultInputDarkDecoration({
   return InputDecoration(
     hintText: hintText,
     counterText: '',
-    hintStyle: AppStyles.labelLarge.copyWith(color: AppColors.white.withValues(alpha: double07)),
+    hintStyle: AppStyles.labelLarge
+        .copyWith(color: AppColors.white.withValues(alpha: double07)),
     errorStyle: AppStyles.labelMedium.copyWith(color: AppColors.errorColor),
     fillColor: AppColors.white.withValues(alpha: double01),
     filled: true,
     prefixIconColor: AppColors.white.withValues(alpha: double07),
-    contentPadding:const EdgeInsets.symmetric(
+    contentPadding: const EdgeInsets.symmetric(
       vertical: padding20,
       horizontal: padding20,
     ),
@@ -49,7 +50,6 @@ InputDecoration defaultInputDarkDecoration({
         width: width2,
       ),
     ),
-
     prefixIcon: prefixIcon,
     suffixIcon: suffixIcon,
   );
@@ -64,7 +64,6 @@ InputDecoration defaultInputLightDecoration({
   return InputDecoration(
     hintText: hintText,
     counterText: '',
-
     hintStyle: AppStyles.labelLarge.copyWith(color: AppColors.boulder),
     errorStyle: AppStyles.labelMedium.copyWith(color: AppColors.errorColor),
     fillColor: AppColors.boulder.withValues(alpha: double01),
@@ -100,7 +99,6 @@ InputDecoration defaultInputLightDecoration({
         width: width2,
       ),
     ),
-
     prefixIcon: prefixIcon,
     suffixIcon: suffixIcon,
   );
@@ -115,10 +113,7 @@ PinTheme defaultDarkPinTheme({required ValueNotifier<bool> hasError}) {
       color: AppColors.white.withValues(alpha: double01),
       borderRadius: BorderRadius.circular(borderRadius12),
       border: Border.all(
-        color:
-            hasError.value
-                ? AppColors.errorColor
-                : AppColors.seaGreen,
+        color: hasError.value ? AppColors.errorColor : AppColors.seaGreen,
       ),
     ),
   );
@@ -128,15 +123,13 @@ PinTheme defaultLightPinTheme({required ValueNotifier<bool> hasError}) {
   return PinTheme(
     width: height56,
     height: width56,
-    textStyle: AppStyles.headLineSmallBold.copyWith(color: AppColors.silverTree),
+    textStyle:
+        AppStyles.headLineSmallBold.copyWith(fontWeight: FontWeight.bold),
     decoration: BoxDecoration(
       color: AppColors.white.withValues(alpha: double01),
       borderRadius: BorderRadius.circular(borderRadius12),
       border: Border.all(
-        color:
-            hasError.value
-                ? AppColors.errorColor
-                : AppColors.seaGreen,
+        color: hasError.value ? AppColors.errorColor : AppColors.seaGreen,
       ),
     ),
   );

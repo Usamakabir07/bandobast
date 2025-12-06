@@ -144,7 +144,7 @@ class RequestPageBody extends HookWidget {
               ),
               const SizedBox(height: height10),
               DropdownButtonFormField<String>(
-                value: selectedService.value,
+                initialValue: selectedService.value,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                 ),

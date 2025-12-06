@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:bandobast/app/pages/on_boarding_page/on_boarding_page.dart';
+import 'package:bandobast/app/pages/otp_verification_page/otp_verification_page.dart';
 import 'package:bandobast/app/pages/pokemons_page/pokemon_page.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -22,6 +23,7 @@ class AppRouter extends RootStackRouter {
         AutoRoute(page: SplashRoute.page),
         AutoRoute(page: OnBoardingRoute.page, initial: true),
         AutoRoute(page: LoginRoute.page),
+        AutoRoute(page: OtpVerificationRoute.page),
         AutoRoute(page: RegisterRoute.page),
         AutoRoute(page: OtpRoute.page),
         AutoRoute(page: DashboardRoute.page),

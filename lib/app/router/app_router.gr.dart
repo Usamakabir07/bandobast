@@ -96,6 +96,43 @@ class OtpRouteArgs {
 }
 
 /// generated route for
+/// [OtpVerificationPage]
+class OtpVerificationRoute extends PageRouteInfo<OtpVerificationRouteArgs> {
+  OtpVerificationRoute({
+    Key? key,
+    required String phoneNumber,
+    List<PageRouteInfo>? children,
+  }) : super(
+         OtpVerificationRoute.name,
+         args: OtpVerificationRouteArgs(key: key, phoneNumber: phoneNumber),
+         initialChildren: children,
+       );
+
+  static const String name = 'OtpVerificationRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<OtpVerificationRouteArgs>();
+      return OtpVerificationPage(key: args.key, phoneNumber: args.phoneNumber);
+    },
+  );
+}
+
+class OtpVerificationRouteArgs {
+  const OtpVerificationRouteArgs({this.key, required this.phoneNumber});
+
+  final Key? key;
+
+  final String phoneNumber;
+
+  @override
+  String toString() {
+    return 'OtpVerificationRouteArgs{key: $key, phoneNumber: $phoneNumber}';
+  }
+}
+
+/// generated route for
 /// [PokemonDetailPage]
 class PokemonDetailRoute extends PageRouteInfo<PokemonDetailRouteArgs> {
   PokemonDetailRoute({

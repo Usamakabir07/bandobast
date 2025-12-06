@@ -31,13 +31,13 @@ class OnboardingBody extends HookWidget {
         "illustration": cleaning,
         "title": "Comfortable Jobs",
         "subtitle": "Make income on your ease",
-        "color": AppColors.silverTree,
+        "color": AppColors.seaGreen,
       },
       {
         "illustration": green,
         "title": "No Skills Required",
         "subtitle": "You don't need a skill to earn",
-        "color": AppColors.successColor,
+        "color": AppColors.seaGreen,
       },
     ];
 

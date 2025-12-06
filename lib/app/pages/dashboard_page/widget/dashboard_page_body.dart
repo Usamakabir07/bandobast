@@ -9,7 +9,7 @@ class DashboardPageBody extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final selectedIndex = useState(1);
+    final selectedIndex = useState(0);
     List<Widget> dashboardScreens = [
       const HomePage(),
       const RequestPage(),
