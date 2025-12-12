@@ -24,6 +24,7 @@ class AppScaffold extends StatelessWidget {
     this.customAppBar,
     this.leadingIconColor,
     this.appBarHeight,
+    this.drawer,
   });
 
   final Widget body;
@@ -42,6 +43,7 @@ class AppScaffold extends StatelessWidget {
   final Widget? customAppBar;
   final Color? leadingIconColor;
   final double? appBarHeight;
+  final Widget? drawer;
 
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -81,6 +83,7 @@ class AppScaffold extends StatelessWidget {
                 actionsPadding: const EdgeInsets.only(right: padding12),
               )
             : null,
+            drawer: drawer,
         body: SafeArea(child: body),
         floatingActionButton: floatingActionButton,
       );

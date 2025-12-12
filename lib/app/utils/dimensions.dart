@@ -321,6 +321,7 @@ const int char3 = 3;
 
 const double double06 = 0.6;
 const double double04 = 0.4;
+const double double045 = 0.45;
 const double double05 = 0.5;
 const double double055 = 0.55;
 const double double07 = 0.7;

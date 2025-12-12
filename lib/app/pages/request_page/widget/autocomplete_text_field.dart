@@ -13,12 +13,15 @@ class AutocompleteTextField extends HookWidget {
     required this.address,
     required this.lat,
     required this.long,
+    this.focusNode,
     this.validators = const <FormFieldValidator>[],
   });
+  
   final TextEditingController addressController;
   final ValueNotifier<String> address;
   final ValueNotifier<double> lat;
   final ValueNotifier<double> long;
+  final FocusNode? focusNode;
   final List<String? Function(String? value)> validators;
 
   @override
@@ -26,6 +29,7 @@ class AutocompleteTextField extends HookWidget {
     final ValueNotifier<bool> isFocused = useState(false);
     final ValueNotifier<bool> isErrorState = useState(false);
     final hasInput = useState<bool>(false);
+    
     useEffect(() {
       void handleInput() {
         hasInput.value = addressController.text.isNotEmpty;
@@ -46,6 +50,11 @@ class AutocompleteTextField extends HookWidget {
       addressController.text = address.value;
       lat.value = placeDetails.lat!;
       long.value = placeDetails.lng!;
+      
+      // Unfocus after selection
+      if (focusNode != null) {
+        focusNode!.unfocus();
+      }
     }
 
     return AddressAutocompleteTextFormField(
@@ -53,53 +62,8 @@ class AutocompleteTextField extends HookWidget {
       onSuggestionClick: onSuggestionClick,
       componentCountry: AppConstants.countryCode,
       language: AppConstants.languageType,
+      focusNode: focusNode,
       decoration: InputDecoration(
-        //   hintStyle: AppStyles.bodyLarge.copyWith(
-        //     color: AppColors.shuttleGrey,
-        //   ),
-        //   border: OutlineInputBorder(
-        //     borderRadius: BorderRadius.circular(borderRadius30),
-        //     borderSide: const BorderSide(
-        //       color: AppColors.iron,
-        //       width: width1,
-        //     ),
-        //   ),
-        //   enabledBorder: OutlineInputBorder(
-        //     borderRadius: BorderRadius.circular(borderRadius30),
-        //     borderSide: const BorderSide(
-        //       color: AppColors.shuttleGrey,
-        //       width: double055,
-        //     ),
-        //   ),
-        //   focusedErrorBorder: OutlineInputBorder(
-        //     borderRadius: BorderRadius.circular(borderRadius30),
-        //     borderSide: const BorderSide(
-        //       color: AppColors.shuttleGrey,
-        //       width: width1,
-        //     ),
-        //   ),
-        //   focusedBorder: OutlineInputBorder(
-        //     borderRadius: BorderRadius.circular(borderRadius30),
-        //     borderSide: const BorderSide(
-        //       color: AppColors.seaGreen,
-        //       width: width2,
-        //     ),
-        //   ),
-        //   errorBorder: OutlineInputBorder(
-        //     borderRadius: BorderRadius.circular(borderRadius30),
-        //     borderSide: const BorderSide(
-        //       color: AppColors.redWine,
-        //       width: width1,
-        //     ),
-        //   ),
-        //   fillColor: AppColors.iron.withValues(alpha: double04),
-        //   filled: true,
-        //   contentPadding: const EdgeInsets.only(
-        //     top: padding11,
-        //     right: padding24,
-        //     bottom: padding11,
-        //     left: padding16,
-        //   ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(borderRadius12),
           borderSide: const BorderSide(

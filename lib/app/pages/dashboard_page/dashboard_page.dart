@@ -1,5 +1,7 @@
 import "package:auto_route/annotations.dart";
+import "package:bandobast/app/pages/dashboard_page/widget/dashboard_side_bar.dart";
 import "package:bandobast/app/themes/app_colors.dart";
+import "package:bandobast/app/themes/app_styles.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 
@@ -17,19 +19,32 @@ class DashboardPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) => AppScaffold(
         canGoBack: false,
-        showAppBar: false,
-        backgroundColor: AppColors.white,
+        showAppBar: true,
+        backgroundColor: Colors.white,
+        drawer: const DashboardDrawer(),
+        leadingIcon: Builder(
+          builder: (context) => InkWell(
+            onTap: () {
+              Scaffold.of(context).openDrawer();
+            },
+            child: const Icon(Icons.menu, color: Colors.black),
+          ),
+        ),
+        title: Text(
+          "Bandobast",
+          textAlign: TextAlign.center,
+          style: AppStyles.headLineSmallBold.copyWith(
+            color: AppColors.seaGreen,
+            fontWeight: FontWeight.w900,
+          ),
+        ),
         body: MultiBlocProvider(
           providers: [
             BlocProvider(create: (_) => getIt<GetPokemonsCubit>()),
             BlocProvider(create: (_) => getIt<SavedPokemonsCubit>()),
             BlocProvider(create: (_) => getIt<AuthCubit>()),
           ],
-          child: Builder(
-            builder: (context) {
-              return const DashboardPageBody();
-            },
-          ),
+          child: const DashboardPageBody(),
         ),
       );
 }

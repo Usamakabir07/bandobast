@@ -21,12 +21,12 @@ class AppRouter extends RootStackRouter {
   @override
   List<AutoRoute> get routes => [
         AutoRoute(page: SplashRoute.page),
-        AutoRoute(page: OnBoardingRoute.page, initial: true),
+        AutoRoute(page: OnBoardingRoute.page, initial: false),
         AutoRoute(page: LoginRoute.page),
         AutoRoute(page: OtpVerificationRoute.page),
         AutoRoute(page: RegisterRoute.page),
         AutoRoute(page: OtpRoute.page),
-        AutoRoute(page: DashboardRoute.page),
+        AutoRoute(page: DashboardRoute.page, initial: true),
         AutoRoute(page: PokemonRoute.page),
         AutoRoute(page: PokemonDetailRoute.page),
         AutoRoute(page: SavedPokemonRoute.page),

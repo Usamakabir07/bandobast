@@ -149,7 +149,7 @@ class AppStyles {
       case 'ur':
       case 'sdh':
       case 'lrc':
-        return 'NotoSansArabic';
+        return 'Cairo';
       default:
         return 'Cairo';
     }

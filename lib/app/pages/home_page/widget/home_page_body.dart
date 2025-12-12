@@ -1,145 +1,133 @@
-import 'package:auto_route/auto_route.dart';
-import 'package:bandobast/app/pages/home_page/widget/services_section.dart';
-import 'package:bandobast/app/router/app_router.dart';
-import 'package:bandobast/app/themes/app_colors.dart';
-import 'package:bandobast/app/themes/app_styles.dart';
+import 'package:bandobast/app/pages/home_page/widget/google_map_widget.dart';
+import 'package:bandobast/app/pages/request_page/widget/autocomplete_text_field.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import '../../../themes/app_colors.dart';
 import '../../../utils/dimensions.dart';
-import '../sub_pages/last_order_page/last_order_page.dart';
 
-class HomePageBody extends StatelessWidget {
+class HomePageBody extends HookWidget {
   const HomePageBody({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
+    /// SHARED STATES
+    final addressController = useTextEditingController();
+    final address = useState("");
+    final lat = useState(0.0);
+    final lng = useState(0.0);
+
+    /// Focus node to detect when text field is focused
+    final focusNode = useFocusNode();
+    final sheetController = useMemoized(() => DraggableScrollableController());
+
+    /// Listen to focus changes and animate sheet
+    useEffect(() {
+      void listener() {
+        if (focusNode.hasFocus) {
+          // Expand to full screen when focused
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (sheetController.isAttached) {
+              sheetController.animateTo(
+                0.95,
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeInOut,
+              );
+            }
+          });
+        } else {
+          // Collapse when unfocused
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (sheetController.isAttached) {
+              sheetController.animateTo(
+                0.4,
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeInOut,
+              );
+            }
+          });
+        }
+      }
+
+      focusNode.addListener(listener);
+      return () => focusNode.removeListener(listener);
+    }, [focusNode, sheetController]);
+
+    return Stack(
       children: [
-        Container(
-          width: MediaQuery.of(context).size.width,
-          padding: const EdgeInsets.all(padding12),
-          decoration: const BoxDecoration(
-            borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(borderRadius20),
-              bottomRight: Radius.circular(borderRadius20),
-            ),
-            gradient: LinearGradient(
-              colors: [
-                AppColors.seaGreen,
-                AppColors.blueGreyDark,
+        /// ==== GOOGLE MAP - Fills entire screen ====
+        GoogleMapWidget(lat: lat, lng: lng),
+
+        /// ==== DRAGGABLE BOTTOM SHEET - Initially 40% ====
+        DraggableScrollableSheet(
+          controller: sheetController,
+          initialChildSize: 0.4,
+          minChildSize: 0.4,
+          maxChildSize: 0.95,
+          snap: true,
+          snapSizes: const [0.4, 0.95],
+          builder: (context, scrollController) => Container(
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.vertical(
+                top: Radius.circular(borderRadius30),
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black26,
+                  blurRadius: 8,
+                  offset: Offset(0, -2),
+                )
               ],
-              end: Alignment.topCenter,
-              begin: Alignment.bottomCenter,
             ),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Karo Bandobast!',
-                    style: AppStyles.titleSmallBold.copyWith(
-                      color: AppColors.white,
+            child: Column(
+              children: [
+                const SizedBox(height: 8),
+                Center(
+                  child: Container(
+                    width: 50,
+                    height: 5,
+                    decoration: BoxDecoration(
+                      color: AppColors.seaGreen,
+                      borderRadius: BorderRadius.circular(borderRadius12),
                     ),
                   ),
-                  Row(
-                    children: [
-                      const Icon(
-                        Icons.support_agent,
-                        color: AppColors.white,
-                        size: iconSize32,
-                      ),
-                      Container(
-                        height: height30,
-                        width: width1,
-                        margin:
-                            const EdgeInsets.symmetric(horizontal: padding12),
-                        color: AppColors.white,
-                      ),
-                      GestureDetector(
-                        onTap: () => 
-                      context.router.replace(const LoginRoute()),
-                        child: const Icon(
-                          Icons.person_outlined,
-                          color: AppColors.white,
-                          size: iconSize32,
-                        ),
-                      ),
-                    ],
-                  )
-                ],
-              ),
-              const SizedBox(height: height18),
-              Row(
-                children: [
-                  const CircleAvatar(
-                    radius: radius25,
-                    backgroundColor: AppColors.white,
-                    child: CircleAvatar(
-                      backgroundImage: NetworkImage(
-                        'https://avatars.githubusercontent.com/u/86590370?v=4',
-                      ),
-                      radius: radius24,
-                    ),
-                  ),
-                  const SizedBox(width: width10),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Text(
-                            'Usama Kabir ',
-                            style: AppStyles.bodyMediumBold.copyWith(
-                              color: AppColors.white,
-                            ),
-                          ),
-                          const Icon(
-                            Icons.verified,
-                            color: AppColors.white,
-                            size: iconSize16,
-                          )
-                        ],
-                      ),
-                      const SizedBox(height: height2),
-                      Text(
-                        '+92 310 667 7657',
-                        style: AppStyles.labelSmall.copyWith(
-                          color: AppColors.white,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              const SizedBox(height: height30),
-              Text(
-                'Explore our services',
-                style: AppStyles.bodyMediumBold.copyWith(
-                  color: AppColors.white,
                 ),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(height: height8),
-        Padding(
-          padding: const EdgeInsets.all(padding12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const ServicesSection(),
-              const SizedBox(height: height16),
-              const Divider(thickness: appBarDivider),
-              const SizedBox(height: height16),
-              Text(
-                'Previous orders',
-                style: AppStyles.bodyMediumBold,
-              ),
-              const SizedBox(height: height16),
-              const LastOrderPage(),
-            ],
+                const SizedBox(height: height8),
+
+                /// ==== AUTOCOMPLETE SEARCH BAR INSIDE BOTTOM SHEET ====
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Material(
+                    elevation: 6,
+                    borderRadius: BorderRadius.circular(16),
+                    child: AutocompleteTextField(
+                      addressController: addressController,
+                      address: address,
+                      lat: lat,
+                      long: lng,
+                      focusNode: focusNode,
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: height8),
+
+                /// ==== LIST VIEW ====
+                Expanded(
+                  child: ListView.builder(
+                    controller: scrollController,
+                    itemCount: 30,
+                    itemBuilder: (_, i) => ListTile(
+                      title: Text("Item $i"),
+                      onTap: () {
+                        // When item is selected, collapse the sheet
+                        focusNode.unfocus();
+                      },
+                    ),
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ],
