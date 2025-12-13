@@ -1,7 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'dart:async';
-// import 'package:bandobast/app/utils/dimensions.dart';
 import 'package:bandobast/app/themes/app_colors.dart';
 import 'package:bandobast/app/utils/dimensions.dart';
 import 'package:bandobast/app/utils/permission_handler.dart';
@@ -13,11 +12,15 @@ import 'package:geolocator/geolocator.dart';
 class GoogleMapWidget extends HookWidget {
   final ValueNotifier<double> lat;
   final ValueNotifier<double> lng;
+  final bool isSelectionMode;
+  final Function(double lat, double lng)? onLocationSelected;
 
   const GoogleMapWidget({
     super.key,
     required this.lat,
     required this.lng,
+    this.isSelectionMode = false,
+    this.onLocationSelected,
   });
 
   @override
@@ -25,12 +28,14 @@ class GoogleMapWidget extends HookWidget {
     final mapController = useState<GoogleMapController?>(null);
     final marker = useState<Marker?>(null);
     final currentPosition = useState<LatLng?>(null);
+    final centerPosition = useState<LatLng?>(null);
 
-    /// DEFAULT LOCATION (Pakistan – Islamabad)
+    // // ✅ NEW: track real user dragging
+    // final isUserDragging = useState(false);
+
     final defaultPosition = LatLng(33.6844, 73.0479);
     final initialPosition = useState<LatLng>(defaultPosition);
 
-    /// Function to get current location
     Future<void> getCurrentLocation() async {
       bool allowed = await checkLocationPermissions();
       if (!allowed) return;
@@ -41,12 +46,14 @@ class GoogleMapWidget extends HookWidget {
       initialPosition.value = newPosition;
       currentPosition.value = newPosition;
 
-      marker.value = Marker(
-        markerId: const MarkerId("current"),
-        position: newPosition,
-        infoWindow: InfoWindow(title: "You are here"),
-        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
-      );
+      if (!isSelectionMode) {
+        marker.value = Marker(
+          markerId: const MarkerId("current"),
+          position: newPosition,
+          infoWindow: InfoWindow(title: "You are here"),
+          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+        );
+      }
 
       final controller = mapController.value;
       if (controller != null) {
@@ -60,12 +67,12 @@ class GoogleMapWidget extends HookWidget {
       Future.microtask(() async {
         await getCurrentLocation();
       });
-
       return null;
     }, []);
 
-    /// ============== LISTEN TO AUTOCOMPLETE UPDATES ==============
+    // Autocomplete updates (unchanged)
     useEffect(() {
+      if (isSelectionMode) return null;
       if (lat.value == 0 || lng.value == 0) return null;
 
       Future.microtask(() async {
@@ -85,7 +92,7 @@ class GoogleMapWidget extends HookWidget {
       });
 
       return null;
-    }, [lat.value, lng.value]);
+    }, [lat.value, lng.value, isSelectionMode]);
 
     return Stack(
       children: [
@@ -95,25 +102,54 @@ class GoogleMapWidget extends HookWidget {
             target: initialPosition.value,
             zoom: 14,
           ),
-          markers: marker.value != null ? {marker.value!} : {},
+          markers:
+              (!isSelectionMode && marker.value != null) ? {marker.value!} : {},
           myLocationEnabled: true,
-          myLocationButtonEnabled: false, // Disable default button
+          myLocationButtonEnabled: false,
           zoomControlsEnabled: false,
           onMapCreated: (controller) {
             mapController.value = controller;
           },
+
+          /// ✅ USER STARTED DRAGGING
+          onCameraMoveStarted: () {
+            if (onLocationSelected != null) {
+              // Signal "drag started"
+              onLocationSelected!(-999, -999);
+            }
+          },
+
+          /// Camera moving
+          onCameraMove: (position) {
+            centerPosition.value = position.target;
+          },
+
+          /// ✅ ONLY FIRE WHEN USER FINISHED DRAGGING
+          onCameraIdle: () {
+            if (centerPosition.value != null && onLocationSelected != null) {
+              onLocationSelected!(
+                centerPosition.value!.latitude,
+                centerPosition.value!.longitude,
+              );
+            }
+          },
         ),
+
+        // Current Location Button (unchanged)
         Positioned(
-          top: MediaQuery.of(context).size.height * double045,
+          top: isSelectionMode
+              ? MediaQuery.of(context).size.height * double08
+              : MediaQuery.of(context).size.height * double045,
           right: padding16,
           child: Material(
-            elevation: 4,
+            elevation: elevation4,
             borderRadius: BorderRadius.circular(borderRadius30),
             child: InkWell(
               onTap: getCurrentLocation,
               borderRadius: BorderRadius.circular(borderRadius30),
               child: CircleAvatar(
                 radius: radius22,
+                backgroundColor: Colors.white,
                 child: Icon(
                   Icons.my_location,
                   color: AppColors.seaGreen,

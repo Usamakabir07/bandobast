@@ -11,7 +11,7 @@ import '../../../common_widgets/app_outlined_button.dart';
 import '../../../common_widgets/app_text_field.dart';
 import '../../../utils/dimensions.dart';
 import '../../../utils/validation.dart';
-import 'autocomplete_text_field.dart';
+import '../../home_page/widget/autocomplete_text_field.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 
 class RequestPageBody extends HookWidget {
@@ -98,6 +98,7 @@ class RequestPageBody extends HookWidget {
               AutocompleteTextField(
                 addressController: addressController,
                 address: address,
+                formattedAddress: address,
                 lat: lat,
                 long: long,
                 validators: [

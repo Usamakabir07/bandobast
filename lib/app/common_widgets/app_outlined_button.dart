@@ -41,7 +41,7 @@ class AppOutlinedButton extends StatelessWidget {
         borderRadius: BorderRadius.circular(borderRadius100),
         onTap: isLoading ? () {} : onPressed,
         child: Container(
-          height: height44,
+          height: height50,
           width: width ?? double.infinity,
           padding: const EdgeInsets.symmetric(
             horizontal: padding10,
@@ -63,10 +63,9 @@ class AppOutlinedButton extends StatelessWidget {
                     ? Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          
-                            prefixIcon!,
-                            // height: height30,
-                            // width: width30,
+                          prefixIcon!,
+                          // height: height30,
+                          // width: width30,
                           const SizedBox(width: width6),
                           Text(
                             text,
