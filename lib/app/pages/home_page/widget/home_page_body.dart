@@ -19,6 +19,7 @@ class HomePageBody extends HookWidget {
   Widget build(BuildContext context) {
     final addressController = useTextEditingController();
     final address = useState("");
+    final formattedAddress = useState("");
     final lat = useState(0.0);
     final lng = useState(0.0);
 
@@ -34,6 +35,8 @@ class HomePageBody extends HookWidget {
     // Prevent duplicate fetches
     final lastFetchedLat = useState<double?>(null);
     final lastFetchedLng = useState<double?>(null);
+
+    final isManuallySelected = useState(false);
 
     // Request form controllers
     final titleController = useTextEditingController();
@@ -253,10 +256,11 @@ class HomePageBody extends HookWidget {
               child: showRequestSheet.value
                   ? _buildRequestSheet(
                       addressController,
-                      address,
+                      formattedAddress,
                       selectedAddress,
                       lat,
                       lng,
+                      isManuallySelected,
                       scrollController,
                       titleController,
                       descriptionController,
@@ -274,13 +278,15 @@ class HomePageBody extends HookWidget {
                       scrollController,
                       addressController,
                       address,
-                      selectedAddress,
+                      formattedAddress,
                       lat,
                       lng,
                       focusNode,
+                      isManuallySelected,
                       onLocationSelected,
                       () {
                         isMapSelectionMode.value = true;
+                        isManuallySelected.value = true;
                         selectedAddress.value = null;
                         lastFetchedLat.value = null;
                         lastFetchedLng.value = null;
@@ -297,10 +303,11 @@ class HomePageBody extends HookWidget {
     ScrollController scrollController,
     TextEditingController addressController,
     ValueNotifier<String> address,
-    ValueNotifier<String?> selected,
+    ValueNotifier<String> formattedAddress,
     ValueNotifier<double> lat,
     ValueNotifier<double> lng,
     FocusNode focusNode,
+    ValueNotifier<bool> isManuallySelected,
     VoidCallback onLocationSelected,
     VoidCallback onChooseOnMap,
   ) {
@@ -327,11 +334,12 @@ class HomePageBody extends HookWidget {
             child: AutocompleteTextField(
               addressController: addressController,
               address: address,
-              formattedAddress: selected,
+              formattedAddress: formattedAddress,
               lat: lat,
               long: lng,
               focusNode: focusNode,
               onLocationSelected: () {
+                isManuallySelected.value = false;
                 onLocationSelected();
               },
             ),
@@ -368,10 +376,11 @@ class HomePageBody extends HookWidget {
   /// REQUEST SHEET
   Widget _buildRequestSheet(
     TextEditingController addressController,
-    ValueNotifier<String> address,
+    ValueNotifier<String> formattedAddress,
     ValueNotifier<String?> selected,
     ValueNotifier<double> lat,
     ValueNotifier<double> lng,
+    ValueNotifier<bool> isManuallySelected,
     ScrollController scrollController,
     TextEditingController titleController,
     TextEditingController descriptionController,
@@ -423,10 +432,16 @@ class HomePageBody extends HookWidget {
                         backgroundColor: AppColors.white,
                       ),
                     ),
-                    title: Text(selected.value?.split(",").first ?? '',
+                    title: Text(
+                        isManuallySelected.value
+                            ? selected.value?.split(",").first ?? ''
+                            : formattedAddress.value.split(",").first,
                         style: AppStyles.bodyMedium
                             .copyWith(fontWeight: FontWeight.w600)),
-                    subtitle: Text(selected.value ?? '',
+                    subtitle: Text(
+                        isManuallySelected.value
+                            ? selected.value ?? ''
+                            : formattedAddress.value,
                         style: AppStyles.bodyMedium
                             .copyWith(color: AppColors.gravel)),
                   ),
