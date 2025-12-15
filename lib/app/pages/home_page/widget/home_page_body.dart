@@ -1,11 +1,10 @@
 import 'dart:developer';
 import 'package:bandobast/app/common_widgets/app_elevated_button.dart';
-import 'package:bandobast/app/common_widgets/app_outlined_button.dart';
-import 'package:bandobast/app/common_widgets/app_text_field.dart';
 import 'package:bandobast/app/pages/home_page/widget/google_map_widget.dart';
-import 'package:bandobast/app/pages/home_page/widget/autocomplete_text_field.dart';
+import 'package:bandobast/app/pages/home_page/widget/request_list_widget.dart';
+import 'package:bandobast/app/pages/home_page/widget/request_sheet.dart';
+import 'package:bandobast/app/pages/home_page/widget/search_sheet.dart';
 import 'package:bandobast/app/themes/app_styles.dart';
-import 'package:bandobast/app/utils/validation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:geocoding/geocoding.dart';
@@ -28,6 +27,7 @@ class HomePageBody extends HookWidget {
 
     // Mode states
     final isMapSelectionMode = useState(false);
+    final showRequests = useState(false);
     final showRequestSheet = useState(false);
     final selectedAddress = useState<String?>(null);
     final isLoadingAddress = useState(false);
@@ -126,6 +126,7 @@ class HomePageBody extends HookWidget {
         log('Request submitted: $requestData');
 
         showRequestSheet.value = false;
+        showRequests.value = true;
         titleController.clear();
         descriptionController.clear();
         feesController.clear();
@@ -254,37 +255,37 @@ class HomePageBody extends HookWidget {
                 ],
               ),
               child: showRequestSheet.value
-                  ? _buildRequestSheet(
-                      addressController,
-                      formattedAddress,
-                      selectedAddress,
-                      lat,
-                      lng,
-                      isManuallySelected,
-                      scrollController,
-                      titleController,
-                      descriptionController,
-                      feesController,
-                      formKey,
-                      submitRequest,
-                      () {
+                  ? RequestSheet(
+                      addressController: addressController,
+                      formattedAddress: formattedAddress,
+                      selected: selectedAddress,
+                      lat: lat,
+                      lng: lng,
+                      isManuallySelected: isManuallySelected,
+                      scrollController: scrollController,
+                      titleController: titleController,
+                      descriptionController: descriptionController,
+                      feesController: feesController,
+                      formKey: formKey,
+                      onSubmit: submitRequest,
+                      onCancel: () {
                         showRequestSheet.value = false;
                         titleController.clear();
                         descriptionController.clear();
                         feesController.clear();
                       },
                     )
-                  : _buildSearchSheet(
-                      scrollController,
-                      addressController,
-                      address,
-                      formattedAddress,
-                      lat,
-                      lng,
-                      focusNode,
-                      isManuallySelected,
-                      onLocationSelected,
-                      () {
+                  : SearchSheet(
+                      scrollController: scrollController,
+                      addressController: addressController,
+                      address: address,
+                      formattedAddress: formattedAddress,
+                      lat: lat,
+                      lng: lng,
+                      focusNode: focusNode,
+                      isManuallySelected: isManuallySelected,
+                      onLocationSelected: onLocationSelected,
+                      onChooseOnMap: () {
                         isMapSelectionMode.value = true;
                         isManuallySelected.value = true;
                         selectedAddress.value = null;
@@ -294,226 +295,10 @@ class HomePageBody extends HookWidget {
                     ),
             ),
           ),
-      ],
-    );
-  }
-
-  /// SEARCH SHEET
-  Widget _buildSearchSheet(
-    ScrollController scrollController,
-    TextEditingController addressController,
-    ValueNotifier<String> address,
-    ValueNotifier<String> formattedAddress,
-    ValueNotifier<double> lat,
-    ValueNotifier<double> lng,
-    FocusNode focusNode,
-    ValueNotifier<bool> isManuallySelected,
-    VoidCallback onLocationSelected,
-    VoidCallback onChooseOnMap,
-  ) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const SizedBox(height: height8),
-        Center(
-          child: Container(
-            width: width50,
-            height: height5,
-            decoration: BoxDecoration(
-              color: AppColors.seaGreen,
-              borderRadius: BorderRadius.circular(borderRadius12),
-            ),
-          ),
-        ),
-        const SizedBox(height: height8),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: padding20),
-          child: Material(
-            elevation: elevation1,
-            borderRadius: BorderRadius.circular(16),
-            child: AutocompleteTextField(
-              addressController: addressController,
-              address: address,
-              formattedAddress: formattedAddress,
-              lat: lat,
-              long: lng,
-              focusNode: focusNode,
-              onLocationSelected: () {
-                isManuallySelected.value = false;
-                onLocationSelected();
-              },
-            ),
-          ),
-        ),
-        const SizedBox(height: height2),
-        TextButton.icon(
-          onPressed: onChooseOnMap,
-          icon: const Icon(Icons.map, color: AppColors.seaGreen),
-          label: Text(
-            'Choose on the map',
-            style: AppStyles.bodyLargeBold.copyWith(
-              color: AppColors.seaGreen,
-              fontWeight: FontWeight.w800,
-            ),
-          ),
-        ),
-        const SizedBox(height: height2),
-        Expanded(
-          child: ListView.builder(
-            controller: scrollController,
-            itemCount: 3,
-            itemBuilder: (_, i) => ListTile(
-              leading: const Icon(Icons.history, color: AppColors.boulder),
-              title: Text("Garden town, Multan", style: AppStyles.bodyLarge),
-              onTap: () => focusNode.unfocus(),
-            ),
-          ),
-        )
-      ],
-    );
-  }
-
-  /// REQUEST SHEET
-  Widget _buildRequestSheet(
-    TextEditingController addressController,
-    ValueNotifier<String> formattedAddress,
-    ValueNotifier<String?> selected,
-    ValueNotifier<double> lat,
-    ValueNotifier<double> lng,
-    ValueNotifier<bool> isManuallySelected,
-    ScrollController scrollController,
-    TextEditingController titleController,
-    TextEditingController descriptionController,
-    TextEditingController feesController,
-    GlobalKey<FormState> formKey,
-    VoidCallback onSubmit,
-    VoidCallback onCancel,
-  ) {
-    return Column(
-      children: [
-        const SizedBox(height: height8),
-        Center(
-          child: Container(
-            width: width50,
-            height: height5,
-            decoration: BoxDecoration(
-              color: AppColors.seaGreen,
-              borderRadius: BorderRadius.circular(borderRadius12),
-            ),
-          ),
-        ),
-        const SizedBox(height: height16),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: padding20),
-          child: Text('Request Details',
-              style:
-                  AppStyles.titleMedium.copyWith(fontWeight: FontWeight.bold)),
-        ),
-        const SizedBox(height: height16),
-        Expanded(
-          child: SingleChildScrollView(
-            controller: scrollController,
-            padding: const EdgeInsets.symmetric(horizontal: padding20),
-            child: Form(
-              key: formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Your location',
-                      style: AppStyles.bodyMedium
-                          .copyWith(fontWeight: FontWeight.w600)),
-                  const SizedBox(height: height8),
-                  ListTile(
-                    leading: const CircleAvatar(
-                      radius: radius10,
-                      backgroundColor: AppColors.seaGreen,
-                      child: CircleAvatar(
-                        radius: radius4,
-                        backgroundColor: AppColors.white,
-                      ),
-                    ),
-                    title: Text(
-                        isManuallySelected.value
-                            ? selected.value?.split(",").first ?? ''
-                            : formattedAddress.value.split(",").first,
-                        style: AppStyles.bodyMedium
-                            .copyWith(fontWeight: FontWeight.w600)),
-                    subtitle: Text(
-                        isManuallySelected.value
-                            ? selected.value ?? ''
-                            : formattedAddress.value,
-                        style: AppStyles.bodyMedium
-                            .copyWith(color: AppColors.gravel)),
-                  ),
-                  const SizedBox(height: height16),
-                  const SizedBox(height: height8),
-                  AppTextField(
-                    controller: titleController,
-                    hintText: 'Enter the request title',
-                    validators: [
-                      Validators.isNotEmpty(
-                          errorText: "This field cannot be empty"),
-                    ],
-                  ),
-                  const SizedBox(height: height16),
-                  Text('Description',
-                      style: AppStyles.bodyMedium
-                          .copyWith(fontWeight: FontWeight.w600)),
-                  const SizedBox(height: height8),
-                  AppTextField(
-                    controller: descriptionController,
-                    hintText: 'Enter the request description',
-                    maxLines: 4,
-                    validators: [
-                      Validators.isNotEmpty(
-                          errorText: "This field cannot be empty"),
-                    ],
-                  ),
-                  const SizedBox(height: height16),
-                  Text('Fees',
-                      style: AppStyles.bodyMedium
-                          .copyWith(fontWeight: FontWeight.w600)),
-                  const SizedBox(height: height8),
-                  AppTextField(
-                      controller: feesController,
-                      hintText: 'Enter your offer fees',
-                      prefixIcon: Padding(
-                        padding: const EdgeInsets.all(padding14),
-                        child: Text("PKR ",
-                            style: AppStyles.titleLargeBold.copyWith(
-                                color: AppColors.seaGreen,
-                                fontWeight: FontWeight.w800)),
-                      ),
-                      textInputType: TextInputType.number,
-                      validators: [
-                        Validators.isNotEmpty(
-                            errorText: "This field cannot be empty"),
-                      ]),
-                  const SizedBox(height: height24),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: AppOutlinedButton(
-                          onPressed: onCancel,
-                          text: 'Cancel',
-                          borderColor: AppColors.boulder,
-                          textColor: AppColors.boulder,
-                        ),
-                      ),
-                      const SizedBox(width: width12),
-                      Expanded(
-                        child: AppElevatedButton(
-                          onPressed: onSubmit,
-                          text: 'Submit',
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
+        if (showRequests.value)
+          RequestListWidget(
+            showRequests: showRequests,
+          )
       ],
     );
   }
