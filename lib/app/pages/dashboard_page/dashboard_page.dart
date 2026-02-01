@@ -1,5 +1,6 @@
 import "package:auto_route/annotations.dart";
 import "package:bandobast/app/pages/dashboard_page/widget/dashboard_side_bar.dart";
+import "package:bandobast/app/pages/login_page/cubit/login_cubit.dart";
 import "package:bandobast/app/themes/app_colors.dart";
 import "package:bandobast/app/themes/app_styles.dart";
 import "package:flutter/material.dart";
@@ -7,10 +8,7 @@ import "package:flutter_bloc/flutter_bloc.dart";
 
 import "../../../injectable/injectable.dart";
 import "../../common_widgets/app_scaffold.dart";
-import "../login_page/cubit/auth_cubit.dart";
-import "../pokemons_page/cubit/get_pokemon_cubit.dart";
-import "../pokemons_page/sub_pages/pokemon_detail_page/cubit/save_pokemons_cubit.dart";
-import "widget/dashboard_page_body.dart" show DashboardPageBody;
+import "widget/dashboard_page_body.dart";
 
 @RoutePage()
 class DashboardPage extends StatelessWidget {
@@ -40,9 +38,7 @@ class DashboardPage extends StatelessWidget {
         ),
         body: MultiBlocProvider(
           providers: [
-            BlocProvider(create: (_) => getIt<GetPokemonsCubit>()),
-            BlocProvider(create: (_) => getIt<SavedPokemonsCubit>()),
-            BlocProvider(create: (_) => getIt<AuthCubit>()),
+            BlocProvider(create: (_) => getIt<LoginCubit>()),
           ],
           child: const DashboardPageBody(),
         ),

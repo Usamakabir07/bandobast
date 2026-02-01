@@ -1,6 +1,9 @@
+import 'package:bandobast/app/utils/constants/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'app/router/app_router.dart';
 import 'app/utils/app_theme.dart';
 import 'app/utils/hide_keyboard.dart';
@@ -8,7 +11,12 @@ import 'injectable/injectable.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: AppConstants.env);
   await injectDependencies();
+  await Supabase.initialize(
+    url: dotenv.env[AppConstants.supabaseUrl]!,
+    anonKey: dotenv.env[AppConstants.supabaseAnonKey]!,
+  );
   runApp(MyApp());
 }
 

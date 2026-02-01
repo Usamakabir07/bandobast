@@ -1,12 +1,13 @@
 import 'dart:io';
 
 import 'package:bandobast/data/data_source/utils/database_constants.dart';
-import 'package:bandobast/data/dto/response/pokemon/pokemon_response_dto.dart';
-import 'package:bandobast/domain/entity/request/search_pokemon/search_pokemon_request.dart';
-import 'package:bandobast/domain/entity/response/pokemon/pokemon_response.dart';
+import 'package:bandobast/domain/entity/request/auth/login/login_user_request.dart';
+import 'package:bandobast/domain/entity/request/auth/register_user_request.dart';
+import 'package:bandobast/domain/entity/request/auth/verify_user/verify_user_request.dart';
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../domain/data_source/app_data_source.dart';
 import '../../domain/repositories/app_repository.dart';
@@ -40,10 +41,11 @@ class AppRepositoryImpl implements AppRepository {
   }
 
   @override
-  Future<Either<Failure, Success>> login(
-      {required String username, required String password}) async {
+  Future<Either<Failure, Success>> registerUser({
+    required RegisterUserRequest request,
+  }) async {
     try {
-      await _appDataSource.login(username, password);
+      await _appDataSource.registerUser(request: request.toDto);
       return const Right(Success());
     } catch (err) {
       final failure = await _handleFailure(err);
@@ -52,10 +54,12 @@ class AppRepositoryImpl implements AppRepository {
   }
 
   @override
-  Future<Either<Failure, List<PokemonResponse>>> getPokemons() async {
+  Future<Either<Failure, Success>> loginUser({
+    required LoginUserRequest request,
+  }) async {
     try {
-      final response = await _appDataSource.getPokemons();
-      return Right(response.map((e) => e.toEntity()).toList());
+      await _appDataSource.loginUser(request: request.toDto);
+      return const Right(Success());
     } catch (err) {
       final failure = await _handleFailure(err);
       return Left(failure);
@@ -63,11 +67,23 @@ class AppRepositoryImpl implements AppRepository {
   }
 
   @override
-  Future<Either<Failure, List<PokemonResponse>>> searchPokemon(
-      SearchPokemonRequest request) async {
+  Future<Either<Failure, bool>> verifyUser({
+    required VerifyUserRequest request,
+  }) async {
     try {
-      final response = await _appDataSource.searchPokemon(request.toDto);
-      return Right(response.map((e) => e.toEntity()).toList());
+      final response = await _appDataSource.verifyUser(request: request.toDto);
+      return Right(response);
+    } catch (err) {
+      final failure = await _handleFailure(err);
+      return Left(failure);
+    }
+  }
+
+  @override
+  Future<Either<Failure, User?>> getCurrentUser() async {
+    try {
+      final response = await _appDataSource.getCurrentUser();
+      return Right(response);
     } catch (err) {
       final failure = await _handleFailure(err);
       return Left(failure);

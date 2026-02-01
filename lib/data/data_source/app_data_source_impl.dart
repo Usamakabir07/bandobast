@@ -1,11 +1,11 @@
-import 'dart:math';
-
 import 'package:bandobast/data/data_source/utils/database_constants.dart';
-import 'package:bandobast/data/dto/request/search_pokemon/search_pokemon_request_dto.dart';
-import 'package:bandobast/data/dto/response/pokemon/pokemon_response_dto.dart';
+import 'package:bandobast/data/dto/request/auth/login/login_user_request_dto.dart';
+import 'package:bandobast/data/dto/request/auth/register_user_request_dto.dart';
+import 'package:bandobast/data/dto/request/auth/verify_user/verify_user_request_dto.dart';
 import 'package:bandobast/injectable/injectable.dart';
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../domain/data_source/app_data_source.dart';
 
 @Injectable(as: AppDataSource)
@@ -13,40 +13,40 @@ class AppDataSourceImpl implements AppDataSource {
   AppDataSourceImpl();
 
   Dio dio = getIt<Dio>();
+  final _supabase = Supabase.instance.client;
 
   @override
-  Future<void> login(String username, String password) async {
-    ///Username and password to login
+  Future<void> registerUser({required RegisterUserRequestDto request}) async {
+    await _supabase.auth.signInWithOtp(phone: request.phoneNumber);
   }
 
   @override
-  Future<List<PokemonResponseDto>> getPokemons() async {
-    List<PokemonResponseDto> pokemonList = [];
-    final random = Random();
-    final Set<int> randomIds = {};
-    while (randomIds.length < 10) {
-      randomIds.add(1 + random.nextInt(DatabaseConstants.maxPokemonId));
-    }
-    for (final id in randomIds) {
-      final response = await dio.get('${DatabaseConstants.pokemon}/$id');
-      if (response.statusCode == 200) {
-        final pokemon = PokemonResponseDto.fromJson(response.data);
-        pokemonList.add(pokemon);
-      }
-    }
-    return pokemonList;
+  Future<bool> verifyUser({required VerifyUserRequestDto request}) async {
+    final resp = await _supabase.auth.verifyOTP(
+      phone: request.phoneNumber,
+      token: request.token,
+      type: OtpType.sms,
+    );
+    final uid = resp.user?.id;
+    if ((uid ?? '').isEmpty) throw Exception('Login failed: No user ID.');
+
+    // profile check (as you had)
+    final profile = await _supabase
+        .from(DatabaseConstants.users)
+        .select(DatabaseConstants.id)
+        .eq(DatabaseConstants.id, uid!)
+        .maybeSingle();
+    return profile != null;
   }
 
   @override
-  Future<List<PokemonResponseDto>> searchPokemon(
-      SearchPokemonRequestDto request) async {
-    List<PokemonResponseDto> pokemonList = [];
-    final response =
-        await dio.get('${DatabaseConstants.pokemon}/${request.name}');
-    if (response.statusCode == 200) {
-      final pokemon = PokemonResponseDto.fromJson(response.data);
-      pokemonList.add(pokemon);
-    }
-    return pokemonList;
+  Future<void> loginUser({required LoginUserRequestDto request}) async {
+    await _supabase.auth.signInWithOtp(phone: request.phoneNumber);
+  }
+
+  @override
+  Future<User?> getCurrentUser() async {
+    final currentUser = _supabase.auth.currentUser;
+    return currentUser;
   }
 }

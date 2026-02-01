@@ -1,6 +1,6 @@
 import "package:auto_route/annotations.dart";
 import "package:auto_route/auto_route.dart";
-import "package:bandobast/app/pages/login_page/cubit/auth_cubit.dart";
+import "package:bandobast/app/pages/login_page/cubit/login_cubit.dart";
 import "package:bandobast/app/pages/login_page/widget/login_page_body.dart";
 import "package:bandobast/app/themes/app_colors.dart";
 import "package:bandobast/app/themes/app_styles.dart";
@@ -27,7 +27,7 @@ class LoginPage extends StatelessWidget {
         ),
         backgroundColor: AppColors.white,
         body: BlocProvider(
-          create: (_) => getIt<AuthCubit>(),
+          create: (_) => getIt<LoginCubit>(),
           child: const LoginPageBody(),
         ),
       );

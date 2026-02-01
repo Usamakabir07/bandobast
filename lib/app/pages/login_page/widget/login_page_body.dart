@@ -1,8 +1,14 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:bandobast/app/common_widgets/app_elevated_button.dart';
+import 'package:bandobast/app/common_widgets/app_progress_indicator.dart';
+import 'package:bandobast/app/common_widgets/error_snackbar.dart';
+import 'package:bandobast/app/pages/login_page/cubit/login_cubit.dart';
+import 'package:bandobast/app/pages/login_page/cubit/login_state.dart';
 import 'package:bandobast/app/router/app_router.dart';
 import 'package:bandobast/app/themes/app_colors.dart';
 import 'package:bandobast/app/utils/default_input_decoration.dart';
+import 'package:bandobast/domain/entity/request/auth/login/login_user_request.dart';
+import 'package:bandobast/domain/utils/extension/failure_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -10,7 +16,6 @@ import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:intl_phone_field/phone_number.dart';
 import '../../../themes/app_styles.dart';
 import '../../../utils/dimensions.dart';
-import '../cubit/auth_cubit.dart';
 import 'package:intl_phone_field/countries.dart' as country_intl;
 
 class LoginPageBody extends HookWidget {
@@ -22,6 +27,7 @@ class LoginPageBody extends HookWidget {
     final phoneController = useTextEditingController();
     final phoneCode = useState('92');
     final focusNode = useFocusNode();
+    final hasError = useState(false);
     // final isChecked = useState(false);
     useListenable(focusNode);
 
@@ -37,68 +43,84 @@ class LoginPageBody extends HookWidget {
       return null;
     }
 
-    return BlocListener<AuthCubit, AuthState>(
-      listener: (context, state) {
-        if (state is AuthLoggedIn) {
-          context.router.replace(const DashboardRoute());
-        }
-      },
-      child: Padding(
-        padding: const EdgeInsets.all(padding12),
-        child: Form(
-          key: formKey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Join us via phone number",
-                    style: AppStyles.headLineSmallBold,
-                  ),
-                  Text(
-                    "We'll send you the OTP to verify your Phone Number",
-                    style: AppStyles.bodyMedium,
-                  ),
-                  const SizedBox(height: height20),
-                  Directionality(
-                    textDirection: TextDirection.ltr,
-                    child: IntlPhoneField(
-                      focusNode: focusNode,
-                      autovalidateMode: AutovalidateMode.always,
-                      keyboardType: TextInputType.phone,
-                      initialCountryCode: 'PK',
-                      controller: phoneController,
-                      countries: allowedCountries,
-                      style: AppStyles.titleSmall,
-                      dropdownTextStyle: AppStyles.titleSmall,
-                      decoration:
-                          defaultInputLightDecoration(hintText: "Phone Number"),
-                      onCountryChanged: (phone) {
-                        phoneCode.value = phone.dialCode;
-                      },
-                      validator: validatePhoneNumber,
+    return BlocConsumer<LoginCubit, LoginState>(
+      listener: (BuildContext context, LoginState state) => state.maybeWhen(
+        loading: () {
+          return const Center(child: AppProgressIndicator());
+        },
+        success: () {
+          return context.router.replaceAll(
+              [OtpVerificationRoute(phoneNumber: phoneController.text)]);
+        },
+        error: (err) {
+          hasError.value = true;
+          return ErrorSnackBar(
+            message: err.getMessage(context),
+          ).show(context);
+        },
+        orElse: () {
+          return null;
+        },
+      ),
+      builder: (BuildContext context, LoginState state) => state.maybeWhen(
+        loading: () => const AppProgressIndicator(),
+        orElse: () => Padding(
+          padding: const EdgeInsets.all(padding12),
+          child: Form(
+            key: formKey,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Join us via phone number",
+                      style: AppStyles.headLineSmallBold,
                     ),
-                  ),
-                  const SizedBox(height: height30),
-                ],
-              ),
-              AppElevatedButton(
-                text: 'Next',
-                textColor: AppColors.white,
-                textSize: fontSize20,
-                color: AppColors.seaGreen,
-                width: MediaQuery.of(context).size.width,
-                onPressed: () {
-                  if (formKey.currentState!.validate()) {
-                    final phone = '+92${phoneController.text}';
-                    // context.read<AuthCubit>().saveCredentials(phone);
-                    context.router.push(OtpVerificationRoute(phoneNumber: phone));
-                  }
-                },
-              ),
-            ],
+                    Text(
+                      "We'll send you the OTP to verify your Phone Number",
+                      style: AppStyles.bodyMedium,
+                    ),
+                    const SizedBox(height: height20),
+                    Directionality(
+                      textDirection: TextDirection.ltr,
+                      child: IntlPhoneField(
+                        focusNode: focusNode,
+                        autovalidateMode: AutovalidateMode.always,
+                        keyboardType: TextInputType.phone,
+                        initialCountryCode: 'PK',
+                        controller: phoneController,
+                        countries: allowedCountries,
+                        style: AppStyles.titleSmall,
+                        dropdownTextStyle: AppStyles.titleSmall,
+                        decoration: defaultInputLightDecoration(
+                            hintText: "Phone Number"),
+                        onCountryChanged: (phone) {
+                          phoneCode.value = phone.dialCode;
+                        },
+                        validator: validatePhoneNumber,
+                      ),
+                    ),
+                    const SizedBox(height: height30),
+                  ],
+                ),
+                AppElevatedButton(
+                  text: 'Next',
+                  textColor: AppColors.white,
+                  textSize: fontSize20,
+                  color: AppColors.seaGreen,
+                  width: MediaQuery.of(context).size.width,
+                  onPressed: () {
+                    if (formKey.currentState!.validate()) {
+                      final request = LoginUserRequest(
+                          phoneNumber: '$phoneCode${phoneController.text}');
+                      context.read<LoginCubit>().loginUser(request: request);
+                    }
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),

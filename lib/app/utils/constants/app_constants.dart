@@ -3,6 +3,9 @@ class AppConstants {
   static const String low = "low";
   static const String medium = "medium";
   static const String high = "high";
+  static const String env = ".env";
+  static const String supabaseUrl = "SUPABASE_URL";
+  static const String supabaseAnonKey = "SUPABASE_ANON_KEY";
   static const String immediate = "immediate";
   static const String none = "none";
   static const String completed = "completed";
