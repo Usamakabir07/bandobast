@@ -10,20 +10,20 @@ _$GetUserProfileDtoImpl _$$GetUserProfileDtoImplFromJson(
         Map<String, dynamic> json) =>
     _$GetUserProfileDtoImpl(
       userId: json['id'] as String,
-      name: json['name'] as String,
+      firstName: json['first_name'] as String,
+      lastName: json['last_name'] as String,
       phone: json['phone'] as String,
-      cars: (json['cars'] as num).toInt(),
-      bookings: (json['bookings'] as num).toInt(),
-      totalWashes: (json['total_washes'] as num).toInt(),
+      email: json['email'] as String,
+      rating: (json['rating'] as num).toDouble(),
     );
 
 Map<String, dynamic> _$$GetUserProfileDtoImplToJson(
         _$GetUserProfileDtoImpl instance) =>
     <String, dynamic>{
       'id': instance.userId,
-      'name': instance.name,
+      'first_name': instance.firstName,
+      'last_name': instance.lastName,
       'phone': instance.phone,
-      'cars': instance.cars,
-      'bookings': instance.bookings,
-      'total_washes': instance.totalWashes,
+      'email': instance.email,
+      'rating': instance.rating,
     };

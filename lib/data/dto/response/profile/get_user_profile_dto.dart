@@ -8,11 +8,11 @@ part 'get_user_profile_dto.g.dart';
 class GetUserProfileDto with _$GetUserProfileDto {
   const factory GetUserProfileDto({
     @JsonKey(name: DatabaseConstants.id) required String userId,
-    @JsonKey(name: DatabaseConstants.name) required String name,
+    @JsonKey(name: DatabaseConstants.firstName) required String firstName,
+    @JsonKey(name: DatabaseConstants.lastName) required String lastName,
     @JsonKey(name: DatabaseConstants.phone) required String phone,
-    @JsonKey(name: DatabaseConstants.cars) required int cars,
-    @JsonKey(name: DatabaseConstants.bookings) required int bookings,
-    @JsonKey(name: DatabaseConstants.totalWashes) required int totalWashes,
+    @JsonKey(name: DatabaseConstants.email) required String email,
+    @JsonKey(name: DatabaseConstants.rating) required double rating,
   }) = _GetUserProfileDto;
 
   factory GetUserProfileDto.fromJson(Map<String, dynamic> json) =>
@@ -22,10 +22,10 @@ class GetUserProfileDto with _$GetUserProfileDto {
 extension GetUserProfileDtoExtension on GetUserProfileDto {
   GetUserProfile get toEntity => GetUserProfile(
         userId: userId,
-        name: name,
-        cars: cars,
-        totalWashes: totalWashes,
-        bookings: bookings,
+        firstName: firstName,
+        lastName: lastName,
         phone: phone,
+        email: email,
+        rating: rating,
       );
 }

@@ -12,6 +12,7 @@
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 
+import '../app/pages/dashboard_page/cubit/get_profile_cubit.dart' as _i776;
 import '../app/pages/login_page/cubit/login_cubit.dart' as _i894;
 import '../app/pages/otp_verification_page/cubit/verify_user_cubit.dart'
     as _i506;
@@ -65,6 +66,8 @@ _i174.GetIt $initGetIt(
       () => _i506.VerifyUserCubit(gh<_i341.VerifyUserUseCase>()));
   gh.factory<_i894.LoginCubit>(
       () => _i894.LoginCubit(gh<_i785.LoginUserUseCase>()));
+  gh.factory<_i776.GetProfileCubit>(
+      () => _i776.GetProfileCubit(gh<_i291.GetUserProfileUseCase>()));
   gh.factory<_i637.SaveUserProfileCubit>(
       () => _i637.SaveUserProfileCubit(gh<_i502.SaveUserProfileUseCase>()));
   return getIt;

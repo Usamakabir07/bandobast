@@ -18,16 +18,16 @@ final _privateConstructorUsedError = UnsupportedError(
 mixin _$GetUserProfile {
   @JsonKey(name: DatabaseConstants.id)
   String get userId => throw _privateConstructorUsedError;
-  @JsonKey(name: DatabaseConstants.name)
-  String get name => throw _privateConstructorUsedError;
+  @JsonKey(name: DatabaseConstants.firstName)
+  String get firstName => throw _privateConstructorUsedError;
+  @JsonKey(name: DatabaseConstants.lastName)
+  String get lastName => throw _privateConstructorUsedError;
   @JsonKey(name: DatabaseConstants.phone)
   String get phone => throw _privateConstructorUsedError;
-  @JsonKey(name: DatabaseConstants.cars)
-  int get cars => throw _privateConstructorUsedError;
-  @JsonKey(name: DatabaseConstants.bookings)
-  int get bookings => throw _privateConstructorUsedError;
-  @JsonKey(name: DatabaseConstants.totalWashes)
-  int get totalWashes => throw _privateConstructorUsedError;
+  @JsonKey(name: DatabaseConstants.email)
+  String get email => throw _privateConstructorUsedError;
+  @JsonKey(name: DatabaseConstants.rating)
+  double get rating => throw _privateConstructorUsedError;
 
   /// Create a copy of GetUserProfile
   /// with the given fields replaced by the non-null parameter values.
@@ -44,11 +44,11 @@ abstract class $GetUserProfileCopyWith<$Res> {
   @useResult
   $Res call(
       {@JsonKey(name: DatabaseConstants.id) String userId,
-      @JsonKey(name: DatabaseConstants.name) String name,
+      @JsonKey(name: DatabaseConstants.firstName) String firstName,
+      @JsonKey(name: DatabaseConstants.lastName) String lastName,
       @JsonKey(name: DatabaseConstants.phone) String phone,
-      @JsonKey(name: DatabaseConstants.cars) int cars,
-      @JsonKey(name: DatabaseConstants.bookings) int bookings,
-      @JsonKey(name: DatabaseConstants.totalWashes) int totalWashes});
+      @JsonKey(name: DatabaseConstants.email) String email,
+      @JsonKey(name: DatabaseConstants.rating) double rating});
 }
 
 /// @nodoc
@@ -67,37 +67,37 @@ class _$GetUserProfileCopyWithImpl<$Res, $Val extends GetUserProfile>
   @override
   $Res call({
     Object? userId = null,
-    Object? name = null,
+    Object? firstName = null,
+    Object? lastName = null,
     Object? phone = null,
-    Object? cars = null,
-    Object? bookings = null,
-    Object? totalWashes = null,
+    Object? email = null,
+    Object? rating = null,
   }) {
     return _then(_value.copyWith(
       userId: null == userId
           ? _value.userId
           : userId // ignore: cast_nullable_to_non_nullable
               as String,
-      name: null == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
+      firstName: null == firstName
+          ? _value.firstName
+          : firstName // ignore: cast_nullable_to_non_nullable
+              as String,
+      lastName: null == lastName
+          ? _value.lastName
+          : lastName // ignore: cast_nullable_to_non_nullable
               as String,
       phone: null == phone
           ? _value.phone
           : phone // ignore: cast_nullable_to_non_nullable
               as String,
-      cars: null == cars
-          ? _value.cars
-          : cars // ignore: cast_nullable_to_non_nullable
-              as int,
-      bookings: null == bookings
-          ? _value.bookings
-          : bookings // ignore: cast_nullable_to_non_nullable
-              as int,
-      totalWashes: null == totalWashes
-          ? _value.totalWashes
-          : totalWashes // ignore: cast_nullable_to_non_nullable
-              as int,
+      email: null == email
+          ? _value.email
+          : email // ignore: cast_nullable_to_non_nullable
+              as String,
+      rating: null == rating
+          ? _value.rating
+          : rating // ignore: cast_nullable_to_non_nullable
+              as double,
     ) as $Val);
   }
 }
@@ -112,11 +112,11 @@ abstract class _$$GetUserProfileImplCopyWith<$Res>
   @useResult
   $Res call(
       {@JsonKey(name: DatabaseConstants.id) String userId,
-      @JsonKey(name: DatabaseConstants.name) String name,
+      @JsonKey(name: DatabaseConstants.firstName) String firstName,
+      @JsonKey(name: DatabaseConstants.lastName) String lastName,
       @JsonKey(name: DatabaseConstants.phone) String phone,
-      @JsonKey(name: DatabaseConstants.cars) int cars,
-      @JsonKey(name: DatabaseConstants.bookings) int bookings,
-      @JsonKey(name: DatabaseConstants.totalWashes) int totalWashes});
+      @JsonKey(name: DatabaseConstants.email) String email,
+      @JsonKey(name: DatabaseConstants.rating) double rating});
 }
 
 /// @nodoc
@@ -133,37 +133,37 @@ class __$$GetUserProfileImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? userId = null,
-    Object? name = null,
+    Object? firstName = null,
+    Object? lastName = null,
     Object? phone = null,
-    Object? cars = null,
-    Object? bookings = null,
-    Object? totalWashes = null,
+    Object? email = null,
+    Object? rating = null,
   }) {
     return _then(_$GetUserProfileImpl(
       userId: null == userId
           ? _value.userId
           : userId // ignore: cast_nullable_to_non_nullable
               as String,
-      name: null == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
+      firstName: null == firstName
+          ? _value.firstName
+          : firstName // ignore: cast_nullable_to_non_nullable
+              as String,
+      lastName: null == lastName
+          ? _value.lastName
+          : lastName // ignore: cast_nullable_to_non_nullable
               as String,
       phone: null == phone
           ? _value.phone
           : phone // ignore: cast_nullable_to_non_nullable
               as String,
-      cars: null == cars
-          ? _value.cars
-          : cars // ignore: cast_nullable_to_non_nullable
-              as int,
-      bookings: null == bookings
-          ? _value.bookings
-          : bookings // ignore: cast_nullable_to_non_nullable
-              as int,
-      totalWashes: null == totalWashes
-          ? _value.totalWashes
-          : totalWashes // ignore: cast_nullable_to_non_nullable
-              as int,
+      email: null == email
+          ? _value.email
+          : email // ignore: cast_nullable_to_non_nullable
+              as String,
+      rating: null == rating
+          ? _value.rating
+          : rating // ignore: cast_nullable_to_non_nullable
+              as double,
     ));
   }
 }
@@ -173,34 +173,34 @@ class __$$GetUserProfileImplCopyWithImpl<$Res>
 class _$GetUserProfileImpl implements _GetUserProfile {
   const _$GetUserProfileImpl(
       {@JsonKey(name: DatabaseConstants.id) required this.userId,
-      @JsonKey(name: DatabaseConstants.name) required this.name,
+      @JsonKey(name: DatabaseConstants.firstName) required this.firstName,
+      @JsonKey(name: DatabaseConstants.lastName) required this.lastName,
       @JsonKey(name: DatabaseConstants.phone) required this.phone,
-      @JsonKey(name: DatabaseConstants.cars) required this.cars,
-      @JsonKey(name: DatabaseConstants.bookings) required this.bookings,
-      @JsonKey(name: DatabaseConstants.totalWashes) required this.totalWashes});
+      @JsonKey(name: DatabaseConstants.email) required this.email,
+      @JsonKey(name: DatabaseConstants.rating) required this.rating});
 
   @override
   @JsonKey(name: DatabaseConstants.id)
   final String userId;
   @override
-  @JsonKey(name: DatabaseConstants.name)
-  final String name;
+  @JsonKey(name: DatabaseConstants.firstName)
+  final String firstName;
+  @override
+  @JsonKey(name: DatabaseConstants.lastName)
+  final String lastName;
   @override
   @JsonKey(name: DatabaseConstants.phone)
   final String phone;
   @override
-  @JsonKey(name: DatabaseConstants.cars)
-  final int cars;
+  @JsonKey(name: DatabaseConstants.email)
+  final String email;
   @override
-  @JsonKey(name: DatabaseConstants.bookings)
-  final int bookings;
-  @override
-  @JsonKey(name: DatabaseConstants.totalWashes)
-  final int totalWashes;
+  @JsonKey(name: DatabaseConstants.rating)
+  final double rating;
 
   @override
   String toString() {
-    return 'GetUserProfile(userId: $userId, name: $name, phone: $phone, cars: $cars, bookings: $bookings, totalWashes: $totalWashes)';
+    return 'GetUserProfile(userId: $userId, firstName: $firstName, lastName: $lastName, phone: $phone, email: $email, rating: $rating)';
   }
 
   @override
@@ -209,18 +209,18 @@ class _$GetUserProfileImpl implements _GetUserProfile {
         (other.runtimeType == runtimeType &&
             other is _$GetUserProfileImpl &&
             (identical(other.userId, userId) || other.userId == userId) &&
-            (identical(other.name, name) || other.name == name) &&
+            (identical(other.firstName, firstName) ||
+                other.firstName == firstName) &&
+            (identical(other.lastName, lastName) ||
+                other.lastName == lastName) &&
             (identical(other.phone, phone) || other.phone == phone) &&
-            (identical(other.cars, cars) || other.cars == cars) &&
-            (identical(other.bookings, bookings) ||
-                other.bookings == bookings) &&
-            (identical(other.totalWashes, totalWashes) ||
-                other.totalWashes == totalWashes));
+            (identical(other.email, email) || other.email == email) &&
+            (identical(other.rating, rating) || other.rating == rating));
   }
 
   @override
   int get hashCode => Object.hash(
-      runtimeType, userId, name, phone, cars, bookings, totalWashes);
+      runtimeType, userId, firstName, lastName, phone, email, rating);
 
   /// Create a copy of GetUserProfile
   /// with the given fields replaced by the non-null parameter values.
@@ -235,31 +235,32 @@ class _$GetUserProfileImpl implements _GetUserProfile {
 abstract class _GetUserProfile implements GetUserProfile {
   const factory _GetUserProfile(
       {@JsonKey(name: DatabaseConstants.id) required final String userId,
-      @JsonKey(name: DatabaseConstants.name) required final String name,
+      @JsonKey(name: DatabaseConstants.firstName)
+      required final String firstName,
+      @JsonKey(name: DatabaseConstants.lastName) required final String lastName,
       @JsonKey(name: DatabaseConstants.phone) required final String phone,
-      @JsonKey(name: DatabaseConstants.cars) required final int cars,
-      @JsonKey(name: DatabaseConstants.bookings) required final int bookings,
-      @JsonKey(name: DatabaseConstants.totalWashes)
-      required final int totalWashes}) = _$GetUserProfileImpl;
+      @JsonKey(name: DatabaseConstants.email) required final String email,
+      @JsonKey(name: DatabaseConstants.rating)
+      required final double rating}) = _$GetUserProfileImpl;
 
   @override
   @JsonKey(name: DatabaseConstants.id)
   String get userId;
   @override
-  @JsonKey(name: DatabaseConstants.name)
-  String get name;
+  @JsonKey(name: DatabaseConstants.firstName)
+  String get firstName;
+  @override
+  @JsonKey(name: DatabaseConstants.lastName)
+  String get lastName;
   @override
   @JsonKey(name: DatabaseConstants.phone)
   String get phone;
   @override
-  @JsonKey(name: DatabaseConstants.cars)
-  int get cars;
+  @JsonKey(name: DatabaseConstants.email)
+  String get email;
   @override
-  @JsonKey(name: DatabaseConstants.bookings)
-  int get bookings;
-  @override
-  @JsonKey(name: DatabaseConstants.totalWashes)
-  int get totalWashes;
+  @JsonKey(name: DatabaseConstants.rating)
+  double get rating;
 
   /// Create a copy of GetUserProfile
   /// with the given fields replaced by the non-null parameter values.

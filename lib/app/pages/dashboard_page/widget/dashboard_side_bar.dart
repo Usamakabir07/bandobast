@@ -1,10 +1,12 @@
 import 'package:bandobast/app/themes/app_colors.dart';
 import 'package:bandobast/app/themes/app_styles.dart';
 import 'package:bandobast/app/utils/dimensions.dart';
+import 'package:bandobast/domain/entity/response/profile/get_user_profile.dart';
 import 'package:flutter/material.dart';
 
 class DashboardDrawer extends StatelessWidget {
-  const DashboardDrawer({super.key});
+  const DashboardDrawer({super.key, required this.profile});
+  final GetUserProfile profile;
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +44,7 @@ class DashboardDrawer extends StatelessWidget {
                 size: iconSize16,
               ),
               title: Text(
-                "Usama",
+                "${profile.firstName} ${profile.lastName}",
                 style: AppStyles.bodyLargeBold,
               ),
               subtitle: Row(
@@ -77,7 +79,7 @@ class DashboardDrawer extends StatelessWidget {
                     ],
                   ),
                   Text(
-                    " 4.7 (189)",
+                    " ${profile.rating}",
                     style: AppStyles.labelMedium,
                   )
                 ],
