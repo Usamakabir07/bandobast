@@ -3,6 +3,7 @@ import 'package:bandobast/data/dto/request/auth/register_user_request_dto.dart';
 import 'package:bandobast/data/dto/request/auth/verify_user/verify_user_request_dto.dart';
 import 'package:bandobast/data/dto/request/profile/check_user_profile/check_user_profile_request_dto.dart';
 import 'package:bandobast/data/dto/request/profile/save_user_profile_request_dto.dart';
+import 'package:bandobast/data/dto/request/user_requests/create_user_request_dto.dart';
 import 'package:bandobast/data/dto/response/profile/get_user_profile_dto.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -15,4 +16,5 @@ abstract class AppDataSource {
   Future<bool> checkUserProfile({required CheckUserProfileRequestDto request});
   Future<GetUserProfileDto> getUserProfile();
   Future<bool> deleteAccount();
+  Future<void> createUserRequest({required CreateUserRequestDto request});
 }

@@ -4,6 +4,7 @@ import 'package:bandobast/data/dto/request/auth/register_user_request_dto.dart';
 import 'package:bandobast/data/dto/request/auth/verify_user/verify_user_request_dto.dart';
 import 'package:bandobast/data/dto/request/profile/check_user_profile/check_user_profile_request_dto.dart';
 import 'package:bandobast/data/dto/request/profile/save_user_profile_request_dto.dart';
+import 'package:bandobast/data/dto/request/user_requests/create_user_request_dto.dart';
 import 'package:bandobast/data/dto/response/profile/get_user_profile_dto.dart';
 import 'package:bandobast/injectable/injectable.dart';
 import 'package:dio/dio.dart';
@@ -89,6 +90,23 @@ class AppDataSourceImpl implements AppDataSource {
         .single();
 
     return GetUserProfileDto.fromJson(profile);
+  }
+
+  @override
+  Future<void> createUserRequest({
+    required CreateUserRequestDto request,
+  }) async {
+    final userId = _supabase.auth.currentUser?.id ?? '';
+    await _supabase.from(DatabaseConstants.userRequests).insert({
+      DatabaseConstants.userId: userId,
+      DatabaseConstants.title: request.title,
+      DatabaseConstants.description: request.description,
+      DatabaseConstants.price: request.price,
+      DatabaseConstants.latitude: request.latitude,
+      DatabaseConstants.longitude: request.longitude,
+      DatabaseConstants.address: request.address,
+      DatabaseConstants.status: request.status,
+    });
   }
 
   @override

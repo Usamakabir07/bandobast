@@ -90,6 +90,7 @@ class DatabaseConstants {
   static const String interestedProducts = 'interested_products';
   static const String product = 'product';
   static const String users = 'users';
+  static const String userRequests = 'user_requests';
   static const String wallets = 'wallets';
   static const String recipients = 'recipients';
   static const String pictures = 'pictures';

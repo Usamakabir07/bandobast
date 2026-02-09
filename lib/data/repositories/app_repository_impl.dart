@@ -7,6 +7,7 @@ import 'package:bandobast/domain/entity/request/auth/register_user_request.dart'
 import 'package:bandobast/domain/entity/request/auth/verify_user/verify_user_request.dart';
 import 'package:bandobast/domain/entity/request/profile/check_user_profile/check_user_profile_request.dart';
 import 'package:bandobast/domain/entity/request/profile/save_user_profile_request.dart';
+import 'package:bandobast/domain/entity/request/user_requests/create_user_request.dart';
 import 'package:bandobast/domain/entity/response/profile/get_user_profile.dart';
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
@@ -128,6 +129,20 @@ class AppRepositoryImpl implements AppRepository {
       );
       return Right(response);
     } catch (err) {
+      final failure = await _handleFailure(err);
+      return Left(failure);
+    }
+  }
+
+  @override
+  Future<Either<Failure, Success>> createUserRequest({
+    required CreateUserRequest request,
+  }) async {
+    try {
+      await _appDataSource.createUserRequest(request: request.toDto);
+      return const Right(Success());
+    } catch (err) {
+      print('Error in createUserRequest: $err');
       final failure = await _handleFailure(err);
       return Left(failure);
     }

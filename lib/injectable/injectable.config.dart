@@ -13,10 +13,14 @@ import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 
 import '../app/pages/dashboard_page/cubit/get_profile_cubit.dart' as _i776;
+import '../app/pages/home_page/cubit/create_user_request_cubit.dart' as _i761;
 import '../app/pages/login_page/cubit/login_cubit.dart' as _i894;
 import '../app/pages/otp_verification_page/cubit/verify_user_cubit.dart'
     as _i506;
 import '../app/pages/register_page/cubit/save_user_profile_cubit.dart' as _i637;
+import '../app/router/guards/auth_guard.dart' as _i839;
+import '../app/router/guards/startup_redirect_guard.dart' as _i127;
+import '../app/router/guards/unauth_guard.dart' as _i914;
 import '../data/data_source/app_data_source_impl.dart' as _i313;
 import '../data/data_source/utils/storage_service.dart' as _i986;
 import '../data/repositories/app_repository_impl.dart' as _i899;
@@ -30,6 +34,8 @@ import '../domain/use_case/profile/check_user_profile_use_case.dart' as _i189;
 import '../domain/use_case/profile/delete_account_use_case.dart' as _i26;
 import '../domain/use_case/profile/get_user_profile_use_case.dart' as _i291;
 import '../domain/use_case/profile/save_user_profile_use_case.dart' as _i502;
+import '../domain/use_case/user_requests/create_user_request_use_case.dart'
+    as _i255;
 
 // initializes the registration of main-scope dependencies inside of GetIt
 _i174.GetIt $initGetIt(
@@ -42,6 +48,8 @@ _i174.GetIt $initGetIt(
     environment,
     environmentFilter,
   );
+  gh.factory<_i914.UnAuthGuard>(() => _i914.UnAuthGuard());
+  gh.factory<_i839.AuthGuard>(() => _i839.AuthGuard());
   gh.singleton<_i986.StorageService>(() => _i986.StorageService());
   gh.factory<_i882.AppDataSource>(() => _i313.AppDataSourceImpl());
   gh.factory<_i788.AppRepository>(
@@ -62,12 +70,18 @@ _i174.GetIt $initGetIt(
       () => _i189.CheckUserProfileUseCase(gh<_i788.AppRepository>()));
   gh.factory<_i26.DeleteAccountUseCase>(
       () => _i26.DeleteAccountUseCase(gh<_i788.AppRepository>()));
+  gh.factory<_i255.CreateUserRequestUseCase>(
+      () => _i255.CreateUserRequestUseCase(gh<_i788.AppRepository>()));
+  gh.factory<_i761.CreateUserRequestCubit>(
+      () => _i761.CreateUserRequestCubit(gh<_i255.CreateUserRequestUseCase>()));
   gh.factory<_i506.VerifyUserCubit>(
       () => _i506.VerifyUserCubit(gh<_i341.VerifyUserUseCase>()));
   gh.factory<_i894.LoginCubit>(
       () => _i894.LoginCubit(gh<_i785.LoginUserUseCase>()));
   gh.factory<_i776.GetProfileCubit>(
       () => _i776.GetProfileCubit(gh<_i291.GetUserProfileUseCase>()));
+  gh.factory<_i127.StartupRedirectGuard>(
+      () => _i127.StartupRedirectGuard(gh<_i189.CheckUserProfileUseCase>()));
   gh.factory<_i637.SaveUserProfileCubit>(
       () => _i637.SaveUserProfileCubit(gh<_i502.SaveUserProfileUseCase>()));
   return getIt;

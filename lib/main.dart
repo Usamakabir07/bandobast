@@ -1,3 +1,6 @@
+import 'package:bandobast/app/router/guards/auth_guard.dart';
+import 'package:bandobast/app/router/guards/startup_redirect_guard.dart';
+import 'package:bandobast/app/router/guards/unauth_guard.dart';
 import 'package:bandobast/app/utils/constants/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -23,7 +26,11 @@ void main() async {
 class MyApp extends StatelessWidget {
   MyApp({super.key});
 
-  final _appRouter = AppRouter();
+  final _appRouter = AppRouter(
+    authGuard: getIt<AuthGuard>(),
+    unAuthGuard: getIt<UnAuthGuard>(),
+    startupRedirectGuard: getIt<StartupRedirectGuard>(),
+  );
 
   @override
   Widget build(BuildContext context) {
