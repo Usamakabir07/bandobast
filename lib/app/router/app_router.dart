@@ -5,7 +5,6 @@ import 'package:flutter/cupertino.dart';
 
 import '../pages/dashboard_page/dashboard_page.dart';
 import '../pages/login_page/login_page.dart';
-import '../pages/otp_page/otp_page.dart';
 import '../pages/register_page/register_page.dart';
 import '../pages/splash_page/splash_page.dart';
 part 'app_router.gr.dart';
@@ -19,7 +18,6 @@ class AppRouter extends RootStackRouter {
         AutoRoute(page: LoginRoute.page),
         AutoRoute(page: OtpVerificationRoute.page),
         AutoRoute(page: RegisterRoute.page),
-        AutoRoute(page: OtpRoute.page),
         AutoRoute(page: DashboardRoute.page, initial: false),
       ];
 }

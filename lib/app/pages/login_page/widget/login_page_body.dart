@@ -49,8 +49,11 @@ class LoginPageBody extends HookWidget {
           return const Center(child: AppProgressIndicator());
         },
         success: () {
-          return context.router.replaceAll(
-              [OtpVerificationRoute(phoneNumber: phoneController.text)]);
+          return context.router.replaceAll([
+            OtpVerificationRoute(
+              phoneNumber: '${phoneCode.value}${phoneController.text}',
+            )
+          ]);
         },
         error: (err) {
           hasError.value = true;
@@ -114,7 +117,9 @@ class LoginPageBody extends HookWidget {
                   onPressed: () {
                     if (formKey.currentState!.validate()) {
                       final request = LoginUserRequest(
-                          phoneNumber: '$phoneCode${phoneController.text}');
+                        phoneNumber:
+                            '${phoneCode.value}${phoneController.text}',
+                      );
                       context.read<LoginCubit>().loginUser(request: request);
                     }
                   },

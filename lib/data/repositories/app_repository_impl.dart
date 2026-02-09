@@ -1,9 +1,13 @@
 import 'dart:io';
 
 import 'package:bandobast/data/data_source/utils/database_constants.dart';
+import 'package:bandobast/data/dto/response/profile/get_user_profile_dto.dart';
 import 'package:bandobast/domain/entity/request/auth/login/login_user_request.dart';
 import 'package:bandobast/domain/entity/request/auth/register_user_request.dart';
 import 'package:bandobast/domain/entity/request/auth/verify_user/verify_user_request.dart';
+import 'package:bandobast/domain/entity/request/profile/check_user_profile/check_user_profile_request.dart';
+import 'package:bandobast/domain/entity/request/profile/save_user_profile_request.dart';
+import 'package:bandobast/domain/entity/response/profile/get_user_profile.dart';
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
@@ -83,6 +87,56 @@ class AppRepositoryImpl implements AppRepository {
   Future<Either<Failure, User?>> getCurrentUser() async {
     try {
       final response = await _appDataSource.getCurrentUser();
+      return Right(response);
+    } catch (err) {
+      final failure = await _handleFailure(err);
+      return Left(failure);
+    }
+  }
+
+  @override
+  Future<Either<Failure, Success>> saveUserProfile({
+    required SaveUserProfileRequest request,
+  }) async {
+    try {
+      await _appDataSource.saveUserProfile(request: request.toDto);
+      return const Right(Success());
+    } catch (err) {
+      final failure = await _handleFailure(err);
+      return Left(failure);
+    }
+  }
+
+  @override
+  Future<Either<Failure, GetUserProfile>> getUserProfile() async {
+    try {
+      final response = await _appDataSource.getUserProfile();
+      return Right(response.toEntity);
+    } catch (err) {
+      final failure = await _handleFailure(err);
+      return Left(failure);
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool>> checkUserProfile({
+    required CheckUserProfileRequest request,
+  }) async {
+    try {
+      final response = await _appDataSource.checkUserProfile(
+        request: request.toDto,
+      );
+      return Right(response);
+    } catch (err) {
+      final failure = await _handleFailure(err);
+      return Left(failure);
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool>> deleteAccount() async {
+    try {
+      final response = await _appDataSource.deleteAccount();
       return Right(response);
     } catch (err) {
       final failure = await _handleFailure(err);

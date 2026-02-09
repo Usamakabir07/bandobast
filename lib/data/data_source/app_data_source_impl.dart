@@ -2,6 +2,9 @@ import 'package:bandobast/data/data_source/utils/database_constants.dart';
 import 'package:bandobast/data/dto/request/auth/login/login_user_request_dto.dart';
 import 'package:bandobast/data/dto/request/auth/register_user_request_dto.dart';
 import 'package:bandobast/data/dto/request/auth/verify_user/verify_user_request_dto.dart';
+import 'package:bandobast/data/dto/request/profile/check_user_profile/check_user_profile_request_dto.dart';
+import 'package:bandobast/data/dto/request/profile/save_user_profile_request_dto.dart';
+import 'package:bandobast/data/dto/response/profile/get_user_profile_dto.dart';
 import 'package:bandobast/injectable/injectable.dart';
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
@@ -48,5 +51,58 @@ class AppDataSourceImpl implements AppDataSource {
   Future<User?> getCurrentUser() async {
     final currentUser = _supabase.auth.currentUser;
     return currentUser;
+  }
+
+  @override
+  Future<void> saveUserProfile({
+    required SaveUserProfileRequestDto request,
+  }) async {
+    await _supabase.from(DatabaseConstants.users).insert({
+      DatabaseConstants.id: request.userId,
+      DatabaseConstants.phone: request.phone,
+      DatabaseConstants.firstName: request.firstName,
+      DatabaseConstants.lastName: request.lastName,
+      DatabaseConstants.email: request.email,
+    });
+  }
+
+  @override
+  Future<bool> checkUserProfile({
+    required CheckUserProfileRequestDto request,
+  }) async {
+    final profile = await Supabase.instance.client
+        .from(DatabaseConstants.users)
+        .select(DatabaseConstants.id)
+        .eq(DatabaseConstants.id, request.userId)
+        .maybeSingle();
+
+    return profile != null;
+  }
+
+  @override
+  Future<GetUserProfileDto> getUserProfile() async {
+    final userId = _supabase.auth.currentUser?.id ?? '';
+    final profile = await Supabase.instance.client
+        .from(DatabaseConstants.users)
+        .select()
+        .eq(DatabaseConstants.id, userId)
+        .single();
+
+    return GetUserProfileDto.fromJson(profile);
+  }
+
+  @override
+  Future<bool> deleteAccount() async {
+    try {
+      final response = await _supabase.functions.invoke('delete-account');
+
+      final data = response.data as Map<String, dynamic>?;
+      if (data != null && data['ok'] == true) {
+        return true;
+      }
+      return false;
+    } catch (e) {
+      return false;
+    }
   }
 }
